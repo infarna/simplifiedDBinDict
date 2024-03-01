@@ -1,0 +1,25 @@
+Stage 2
+The database should support displaying data based on filters. Introduce an operation to support printing some fields of a record.
+
+SCAN <timestamp> <key> — should return a string representing the fields of the record associated with key. 
+The returned string should be in the following format "<field1>(<value1>), <field2>(<value2>), ...", where fields are sorted lexicographically. 
+If the specified record does not exist, returns an empty string.
+
+SCAN_BY_PREFIX <timestamp> <key> <prefix> — should return a string representing some fields of the record associated with key. 
+Specifically, only fields that start with prefix should be included. 
+The returned string should be in the same format as in the SCAN operation with fields sorted in lexicographical order.
+queries = [
+  ["SET", "0", "A", "BC", "4"],
+  ["SET", "10", "A", "BD", "5"],
+  ["SET", "20", "A", "C", "6"],
+  ["SCAN_BY_PREFIX", "30", "A", "B"],
+  ["SCAN", "40", "A"],
+  ["SCAN_BY_PREFIX", "50", "B", "B"]
+]
+
+returns ""; database state: {"A": {"BC": 4}}
+returns ""; database state: {"A": {"BC": 4, "BD": 5}}
+returns ""; database state: {"A": {"BC": 4, "BD": 5, "C": 6}}
+returns "BC(4), BD(5)"
+returns "BC(4), BD(5), C(6)"
+returns ""
