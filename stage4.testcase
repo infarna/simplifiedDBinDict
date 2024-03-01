@@ -1,0 +1,69 @@
+Test Cases
+
+queries:
+[["SET","160000100","foo","bar","1"], 
+ ["SET_WITH_TTL","160000170","key","key","2","680"], 
+ ["GET","160000400","foo","bar"], 
+ ["SCAN_BY_PREFIX","160000700","key","k"], 
+ ["COMPARE_AND_SET","160000880","foo","bar","1","6"], 
+ ["COMPARE_AND_SET_WITH_TTL","160000900","key","key","2","7","200"], 
+ ["COMPARE_AND_DELETE","160000920","foo","bar","6"], 
+ ["SCAN","160000950","foo"], 
+ ["SET_WITH_TTL","160000970","key","key","2","230"], 
+ ["SET_WITH_TTL","160000980","foo","bar","1","600"], 
+ ["COMPARE_AND_SET_WITH_TTL","160001000","foo","bar","1","4","300"], 
+ ["COMPARE_AND_SET","160001200","key","key","2","5"], 
+ ["SCAN","160001250","key"], 
+ ["SCAN","160001300","foo"]]
+ 
+
+queries: [
+      ["SET_WITH_TTL",         "160000030",         "foo",         "bar",         "1",         "90"       ],
+      ["SET_WITH_TTL",         "160000040",         "foo",         "two",         "2",         "60"       ],
+      ["COMPARE_AND_SET_WITH_TTL",         "160000042",         "foo",         "two",         "2",         "3",         "108"       ],
+      ["COMPARE_AND_SET_WITH_TTL",         "160000050",         "foo",         "bar",         "1",         "4",         "30"       ],
+      ["COMPARE_AND_DELETE",         "160000051",         "foo",         "bar",         "4"       ],
+      ["COMPARE_AND_SET_WITH_TTL","160000052","foo","bar",         "1",         "5",         "100"       ],
+      ["COMPARE_AND_SET_WITH_TTL","160000092","foo","two",         "4",         "5",         "100"       ],
+      ["COMPARE_AND_SET_WITH_TTL","160000100","foo","two",         "3",         "6",         "70"       ],
+      ["SET","160000120","foo","bar","7"],
+      ["SET_WITH_TTL",         "160000130",         "foo",         "two",         "6",         "5"       ],
+      ["COMPARE_AND_SET_WITH_TTL",         "160000150",         "foo",         "bar",         "7",         "4",         "40"       ],
+      ["COMPARE_AND_SET_WITH_TTL",         "160000160",         "foo",         "two",         "3",         "4",         "40"       ],
+      ["SCAN","160000190",         "foo"       ],
+      ["SCAN","160000191",         "foo"       ],
+      ["GET_WHEN","160000192","foo","two","160000097"],
+      ["GET_WHEN","160000200","foo","bar","160000055"],
+      ["GET_WHEN","160000210","foo","bar","160000050"],
+      ["GET_WHEN","160000220","foo","two","160000150"]
+    ]
+
+"output": [  "",  "",  "true",  "true",  "true",  "false",  "false",  "true",  "",  "",  "true",  "false",  "",  "",  "3",  "",  "4",  ""   ]
+
+
+
+queries =[ [ "SET_WITH_TTL", "160000000", "foo", "bar", "10", "100" ],
+[   "SCAN_BY_PREFIX",   "160000025",   "foo",   "b" ],
+[   "SET_WITH_TTL",   "160000030",   "foo",   "key1",   "1",   "70" ],
+[   "SET_WITH_TTL",   "160000035",   "foo",   "key2",   "4",   "65" ],
+[   "SET_WITH_TTL",   "160000040",   "key1",   "foo",   "8",   "260" ],
+[   "SCAN_BY_PREFIX",   "160000050",   "foo",   "key" ],
+[   "SET_WITH_TTL",   "160000060",   "foo",   "key3",   "10",   "20" ],
+[   "SCAN_BY_PREFIX",   "160000070",   "foo",   "key" ],
+[   "SCAN",   "160000080",   "key1" ],
+[   "SCAN",   "160000100",   "foo" ],
+[   "COMPARE_AND_SET_WITH_TTL",   "160000120",   "foo",   "key1",   "1",   "100",   "30" ],
+[   "COMPARE_AND_SET",   "160000125",   "foo",   "key2",   "0",   "150" ],
+[   "SET_WITH_TTL",   "160000130",   "foo",   "k",   "70",   "40" ],
+[   "SCAN",   "160000140",   "foo" ],
+[   "GET",   "160000152",   "foo",   "key1" ],
+[   "COMPARE_AND_SET_WITH_TTL",   "160000153",   "key1",   "foo",   "8",   "12",   "1" ],
+[   "SCAN_BY_PREFIX",   "160000155",   "key1",   "fo" ],
+[   "COMPARE_AND_DELETE",   "160000158",   "foo",   "key2",   "150" ],
+[   "SET",   "160000160",   "key1",   "foo",   "70" ],
+[   "COMPARE_AND_SET_WITH_TTL",   "160000164",   "key1",   "foo",   "70",   "30",   "60" ],
+[   "SCAN_BY_PREFIX",   "160000165",   "key1",   "fox" ],
+[   "SCAN_BY_PREFIX",   "160000170",   "key1",   "fo" ]
+]
+
+output= [ "", "bar(10)", "", "", "", "key1(1), key2(4)", "", "key1(1), key2(4), key3(10)", "foo(8)", "", "false", "false", "", "k(70)", "", "true", "", "false", "", "true", "", "foo(30)" ]
