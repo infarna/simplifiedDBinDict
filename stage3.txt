@@ -1,0 +1,37 @@
+Stage 3
+Support the TTL (Time-To-Live) settings for records and fields. For each field-value pair in the database, the TTL determines how long that value will persist before being removed.
+
+Note: All relevant operations defined in previous levels are assumed to have an infinite TTL.
+
+SET_WITH_TTL <timestamp> <key> <field> <value> <ttl> — 
+should insert the specified value and set its Time-To-Live starting at timestamp. 
+If the field in the record already exists, then update its value and TTL. 
+The ttl parameter represents the number of time units that this field-value pair should exist in the database, 
+meaning it will be available during this interval: [timestamp, timestamp + ttl). It is guaranteed that ttl is greater than 0. 
+This operation should return an empty string.
+
+COMPARE_AND_SET_WITH_TTL <timestamp> <key> <field> <expectedValue> <newValue> <ttl> — 
+the same as COMPARE_AND_SET, but should also update TTL of the newValue. 
+This operation should return "true" if the field was updated and "false" otherwise. 
+It is guaranteed that ttl is greater than 0.
+
+queries = [
+  ["SET", "1", "A", "B", "4"],
+  ["SET_WITH_TTL", "2", "X", "Y", "5", "15"],
+  ["SET_WITH_TTL", "4", "A", "D", "3", "6"],
+  ["COMPARE_AND_SET_WITH_TTL", "6", "A", "D", "3", "5", "10"],
+
+  ["GET", "7", "A", "D"],
+  ["SCAN", "15", "A"],
+  ["SCAN", "17", "A"]
+]
+
+returns ""; database state: {"A": {"B": 4}} with {"B": 4} having no expiring time
+returns ""; database state: {"A": {"B": 4}, "X": {"Y": 5}} with {"Y": 5} expiring at timestamp 17
+returns ""; database state: {"A": {"B": 4, "D": 3}, "X": {"Y": 5}} with {"D": 3} expiring at timestamp 10
+returns "true"; database state: {"A": {"B": "4", "D": 5}, "X": {"Y": 5}}
+updates field "D" to {"D": "5"} expiring at timestamp 16
+returns "5"; the field "D" in record "A" has the value of 5 at timestamp 7
+returns "B(4), D(5)"
+returns "B(4)"; the field "D" in record "A" expired at timestamp 16
+
