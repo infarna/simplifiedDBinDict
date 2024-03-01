@@ -1,0 +1,28 @@
+Stage 4
+The database should support look back GET operation.
+
+GET_WHEN <timestamp> <key> <field> <atTimestamp> — 
+should return a string representing the value of field at atTimestamp from the record associated with key. 
+If atTimestamp is 0, perform the GET operation described in Level 1. It is guaranteed that atTimestamp will not be greater than timestamp. 
+If the specified field or record did not exist at the given timestamp, return an empty string.
+Examples
+The example below shows how these operations should work (the section is scrollable to the right):
+
+Queries	Explanations
+queries = [
+  ["SET_WITH_TTL", "1", "A", "B", "3", "10"],
+  ["COMPARE_AND_SET_WITH_TTL", "4", "A", "B", "3", "7", "9"],
+
+  ["GET", "10", "A", "B"],
+  ["GET_WHEN", "13", "A", "B", "3"],
+  ["GET_WHEN", "15", "A", "B", "13"]
+]
+
+
+
+returns ""; database state: {"A": {"B": 3}} with {"B": 3} expiring at timestamp 11
+returns "true"; database state: {"A": {"B": 7}}
+updates field "B" to {"B": 7} expiring at timestamp 13
+returns "7"; field "B" in record "A" had a value of 7 at timestamp 10
+returns "3"; field "B" in record "A" had a value of 3 at timestamp 3
+returns ""; field "B" in record "A" expired at timestamp 13
